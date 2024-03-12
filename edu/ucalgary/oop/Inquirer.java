@@ -20,6 +20,4 @@ public class Inquirer extends Person{
     public String getServicesPhoneNum() {
         return servicesPhoneNum;
     }
-
-
 }

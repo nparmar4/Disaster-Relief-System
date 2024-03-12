@@ -63,8 +63,6 @@ public class InquirerTest{
         Inquirer inquirer = new Inquirer(expectedFirstName, expectedLastName, expectedPhoneNumber, expectedMessage);
         assertEquals(expectedMessage, inquirer.getInfo());
     }
-
-
 }
 
 

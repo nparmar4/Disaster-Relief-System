@@ -11,13 +11,13 @@ public class ReliefServiceTest {
     private Location lastKnownLocation;
     private String validDate = "2024-03-12";
     private String invalidDate = "2027/01/10";
-    private String expectedInfoProvided = "Looking for friend";
-    private String expectedLogDetails = "Inquirer: Neha, Missing Person: John Doe, Date of Inquiry: 2024-03-12, Info Provided: Looking for friend, Last Known Location: Office"; 
+    private String expectedInfoProvided = "Looking for brother";
+    private String expectedLogDetails = "Inquirer: Neha, Missing Person: Aryan Parmar, Date of Inquiry: 2024-03-12, Info Provided: Looking for brother, Last Known Location: Office"; 
 
     @Before
     public void setUp() {
-        inquirer = new Inquirer("Neha", "Parmar", "1234567890", "Looking for friend.");
-        missingPerson = new DisasterVictim("John Doe", "2024-03-10");
+        inquirer = new Inquirer("Neha", "Parmar", "1234567890", "Looking for brother.");
+        missingPerson = new DisasterVictim("Aryan Parmar", "2024-03-10");
         lastKnownLocation = new Location("Office", "2500 University Dr NW");
         reliefService = new ReliefService(inquirer, missingPerson, validDate, expectedInfoProvided, lastKnownLocation);
     }
