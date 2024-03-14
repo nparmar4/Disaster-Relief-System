@@ -5,8 +5,6 @@ import static org.junit.Assert.*;
 
 
 public class PersonTest {
-
-
 private Person person;
 private String expectedFirstName = "Neha";
 private String expectedLastName = "Parmar";

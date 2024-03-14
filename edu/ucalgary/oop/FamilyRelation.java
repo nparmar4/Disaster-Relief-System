@@ -39,4 +39,15 @@ public class FamilyRelation {
     public boolean duplicationCheck(DisasterVictim personOne, DisasterVictim personTwo) {
         return this.personOne.equals(personOne) && this.personTwo.equals(personTwo);
     }
+
+    public void deleteRelationship() {
+        this.personOne = null;
+        this.personTwo = null;
+        this.relationshipTo = null;
+    }
+
+    public boolean checkExistingRelationship() {
+        return personOne != null && personTwo != null && relationshipTo != null;
+    }
+    
 }

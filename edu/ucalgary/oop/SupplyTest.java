@@ -1,4 +1,3 @@
-
 package edu.ucalgary.oop;
 
 import org.junit.Test;
@@ -34,5 +33,25 @@ public class SupplyTest {
     public void testSetQuantity() {
         supply.setQuantity(10);
         assertEquals("setQuantity should update quantity.", 10, supply.getQuantity());
+    }
+    @Test
+    public void testAddToQuantity() {
+        int initialQuantity = supply.getQuantity();
+        supply.addToQuanity();
+        assertEquals("addToQuantity should increase quantity by 1.", initialQuantity + 1, supply.getQuantity());
+    }
+
+    @Test
+    public void testRemoveFromQuantity() {
+        int initialQuantity = supply.getQuantity();
+        supply.removeFromQuantity();
+        assertEquals("removeFromQuantity should decrease quantity by 1.", initialQuantity - 1, supply.getQuantity());
+    }
+
+    @Test
+    public void testRemoveFromQuantityWithZeroQuantity() {
+        supply.setQuantity(0);
+        supply.removeFromQuantity();
+        assertEquals("removeFromQuantity should not decrease quantity when quantity is already 0.", 0, supply.getQuantity());
     }
 }
