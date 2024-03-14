@@ -12,13 +12,11 @@ public class LocationTest {
 
     @Before
     public void setUp() {
-        // Initializing test objects before each test method
         location = new Location("Shelter A", "1234 Shelter Ave");
         victim = new DisasterVictim("John Doe", "2024-01-01", 33);
         supply = new Supply("Water Bottle", 10);
     }
 
-    // Helper method to check if a supply is in the list
     private boolean containsSupply(ArrayList<Supply> supplies, Supply supplyToCheck) {
         return supplies.contains(supplyToCheck);
     }
