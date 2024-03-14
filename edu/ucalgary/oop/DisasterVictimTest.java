@@ -10,71 +10,70 @@ public class DisasterVictimTest {
 
     @Before
     public void setUp() {
-        victim = new DisasterVictim("John", "2024-03-12", 30);
+        victim = new DisasterVictim("Michael", "2024-03-14", 28);
     }
 
     @Test
     public void testConstructorWithAge() {
-        assertEquals("John", victim.getFirstName());
-        assertEquals("2024-03-12", victim.getEntryDate());
-        assertEquals("30", victim.getAge());
+        assertEquals("Michael", victim.getFirstName());
+        assertEquals("2024-03-14", victim.getEntryDate());
+        assertEquals("28", victim.getAge());
     }
 
     @Test
     public void testConstructorWithDateOfBirth() {
-        DisasterVictim victimWithDOB = new DisasterVictim("Jane", "2024-03-12", "1994-01-01");
-        assertEquals("Jane", victimWithDOB.getFirstName());
-        assertEquals("2024-03-12", victimWithDOB.getEntryDate());
-        assertEquals("1994-01-01", victimWithDOB.getDateOfBirth());
+        DisasterVictim victimWithDOB = new DisasterVictim("Sarah", "2024-03-14", "1996-05-25");
+        assertEquals("Sarah", victimWithDOB.getFirstName());
+        assertEquals("2024-03-14", victimWithDOB.getEntryDate());
+        assertEquals("1996-05-25", victimWithDOB.getDateOfBirth());
     }
 
     @Test
     public void testSetAndGetComments() {
-        victim.setComments("Some comments");
-        assertEquals("Some comments", victim.getComments());
+        victim.setComments("Updated comments");
+        assertEquals("Updated comments", victim.getComments());
     }
 
     @Test
     public void testSetAndGetMedicalRecords() {
-        // Create a Location object
-        Location location = new Location("John", "Canada");
-        MedicalRecord record = new MedicalRecord(location, "Some condition", "2024-03-12");
+        Location location = new Location("Michael", "USA");
+        MedicalRecord record = new MedicalRecord(location, "Fever", "2024-03-14");
         ArrayList<MedicalRecord> medicalRecords = new ArrayList<>();
         medicalRecords.add(record);
         victim.setMedicalRecords(medicalRecords);
         assertEquals(1, victim.getMedicalRecords().length);
-        assertEquals("Some condition", victim.getMedicalRecords()[0].getTreatmentDetails());
+        assertEquals("Fever", victim.getMedicalRecords()[0].getTreatmentDetails());
     }    
 
     @Test
     public void testSetAndGetPersonalBelongings() {
         ArrayList<Supply> personalBelongings = new ArrayList<>();
-        Supply supply = new Supply("Water", 10);
+        Supply supply = new Supply("Food", 8);
         personalBelongings.add(supply);
         victim.setPersonalBelongings(personalBelongings);
         assertEquals(1, victim.getPersonalBelongings().size());
-        assertEquals("Water", victim.getPersonalBelongings().get(0).getType());
-        assertEquals(10, victim.getPersonalBelongings().get(0).getQuantity());
+        assertEquals("Food", victim.getPersonalBelongings().get(0).getType());
+        assertEquals(8, victim.getPersonalBelongings().get(0).getQuantity());
     }
 
     @Test
     public void testSetAndGetFamilyConnections() {
-        DisasterVictim personOne = new DisasterVictim("John", "2024-03-12", 30);
-        DisasterVictim personTwo = new DisasterVictim("Alice", "2024-03-12", 25);
-        FamilyRelation relation = new FamilyRelation(personOne, "Sibling", personTwo);
+        DisasterVictim personOne = new DisasterVictim("Michael", "2024-03-14", 28);
+        DisasterVictim personTwo = new DisasterVictim("Eva", "2024-03-14", 24);
+        FamilyRelation relation = new FamilyRelation(personOne, "Parent", personTwo);
         ArrayList<FamilyRelation> familyConnections = new ArrayList<>();
         familyConnections.add(relation);
         victim.setFamilyConnections(familyConnections);
         assertEquals(1, victim.getFamilyConnections().size());
-        assertEquals("Sibling", victim.getFamilyConnections().get(0).getRelationshipTo());
-        assertEquals("John", victim.getFamilyConnections().get(0).getPersonOne().getFirstName());
-        assertEquals("Alice", victim.getFamilyConnections().get(0).getPersonTwo().getFirstName());
+        assertEquals("Parent", victim.getFamilyConnections().get(0).getRelationshipTo());
+        assertEquals("Michael", victim.getFamilyConnections().get(0).getPersonOne().getFirstName());
+        assertEquals("Eva", victim.getFamilyConnections().get(0).getPersonTwo().getFirstName());
     }
     
     @Test
     public void testRemovePersonalBelonging() {
         ArrayList<Supply> personalBelongings = new ArrayList<>();
-        Supply supply = new Supply("Water", 10);
+        Supply supply = new Supply("Medicine", 6);
         personalBelongings.add(supply);
         victim.setPersonalBelongings(personalBelongings);
         victim.removePersonalBelonging(supply);
@@ -83,62 +82,62 @@ public class DisasterVictimTest {
 
     @Test
     public void testAddPersonalBelonging() {
-        Supply supply = new Supply("Food", 5);
+        Supply supply = new Supply("Blanket", 3);
         victim.addPersonalBelonging(supply);
         assertEquals(1, victim.getPersonalBelongings().size());
-        assertEquals("Food", victim.getPersonalBelongings().get(0).getType());
-        assertEquals(5, victim.getPersonalBelongings().get(0).getQuantity());
+        assertEquals("Blanket", victim.getPersonalBelongings().get(0).getType());
+        assertEquals(3, victim.getPersonalBelongings().get(0).getQuantity());
     }
 
     @Test
     public void testAddFamilyConnection() {
-        DisasterVictim person = new DisasterVictim("Alice", "2024-03-12", 25);
-        FamilyRelation relation = new FamilyRelation(person, "Sibling", victim);
+        DisasterVictim person = new DisasterVictim("Eva", "2024-03-14", 24);
+        FamilyRelation relation = new FamilyRelation(person, "Parent", victim);
         victim.addFamilyConnection(relation);
 
         assertEquals(1, victim.getFamilyConnections().size());
-        assertEquals("Sibling", victim.getFamilyConnections().get(0).getRelationshipTo());
-        assertEquals("Alice", victim.getFamilyConnections().get(0).getPersonOne().getFirstName());
-        assertEquals("John", victim.getFamilyConnections().get(0).getPersonTwo().getFirstName());
+        assertEquals("Parent", victim.getFamilyConnections().get(0).getRelationshipTo());
+        assertEquals("Eva", victim.getFamilyConnections().get(0).getPersonOne().getFirstName());
+        assertEquals("Michael", victim.getFamilyConnections().get(0).getPersonTwo().getFirstName());
     }
     
 
     @Test
-public void testRemoveFamilyConnection() {
-    FamilyRelation relation = new FamilyRelation(victim, "Sibling", new DisasterVictim("Alice", "2024-03-12", 25));
-    victim.addFamilyConnection(relation);
-    victim.removeFamilyConnection(relation);
-    assertEquals(0, victim.getFamilyConnections().size());
-}
+    public void testRemoveFamilyConnection() {
+        FamilyRelation relation = new FamilyRelation(victim, "Sibling", new DisasterVictim("Eva", "2024-03-14", 24));
+        victim.addFamilyConnection(relation);
+        victim.removeFamilyConnection(relation);
+        assertEquals(0, victim.getFamilyConnections().size());
+    }
 
 
-@Test
-public void testAddMedicalRecord() {
-    Location location = new Location("John", "Canada");
-    MedicalRecord record = new MedicalRecord(location, "Broken leg", "2024-03-12");
-    victim.addMedicalRecord(record);
-    assertEquals(1, victim.getMedicalRecords().length);
-    assertEquals("Broken leg", victim.getMedicalRecords()[0].getTreatmentDetails());
-    assertEquals("2024-03-12", victim.getMedicalRecords()[0].getDateOfTreatment());
-}
+    @Test
+    public void testAddMedicalRecord() {
+        Location location = new Location("Michael", "USA");
+        MedicalRecord record = new MedicalRecord(location, "Fever", "2024-03-14");
+        victim.addMedicalRecord(record);
+        assertEquals(1, victim.getMedicalRecords().length);
+        assertEquals("Fever", victim.getMedicalRecords()[0].getTreatmentDetails());
+        assertEquals("2024-03-14", victim.getMedicalRecords()[0].getDateOfTreatment());
+    }
 
 
     @Test
     public void testSetAndGetSupply() {
-        victim.setSupply("Water");
-        assertEquals("Water", victim.getSupply());
+        victim.setSupply("Medicine");
+        assertEquals("Medicine", victim.getSupply());
     }
 
     @Test
     public void testSetAndGetAge() {
-        victim.setAge(35);
-        assertEquals("35", victim.getAge());
+        victim.setAge(33);
+        assertEquals("33", victim.getAge());
     }
 
     @Test
     public void testSetAndGetDateOfBirth() {
-        victim.setDateOfBirth("1994-01-01");
-        assertEquals("1994-01-01", victim.getDateOfBirth());
+        victim.setDateOfBirth("1986-12-05");
+        assertEquals("1986-12-05", victim.getDateOfBirth());
     }
 
     @Test
@@ -149,25 +148,23 @@ public void testAddMedicalRecord() {
 
     @Test
     public void testSetAndGetLastName() {
-        victim.setLastName("Doe");
-        assertEquals("Doe", victim.getLastName());
+        victim.setLastName("Smith");
+        assertEquals("Smith", victim.getLastName());
     }
 
     @Test
     public void testDietRestriction() {
-        // Test each diet restriction case
         victim.dietRestriction(DisasterVictim.Diet.AVML);
-        // Assert based on expected behavior (e.g., using output or side effects)
     }
 
     @Test
     public void testDecreaseSupplyQuantity() {
         ArrayList<Supply> supplies = new ArrayList<>();
-        supplies.add(new Supply("Water", 10));
+        supplies.add(new Supply("Medicine", 8));
         victim.setPersonalBelongings(supplies);
 
-        Supply waterSupply = new Supply("Water", 5);
-        victim.decreaseSupplyQuantity(waterSupply);
+        Supply medicineSupply = new Supply("Medicine", 3);
+        victim.decreaseSupplyQuantity(medicineSupply);
 
         assertEquals(5, victim.getPersonalBelongings().get(0).getQuantity());
     }
