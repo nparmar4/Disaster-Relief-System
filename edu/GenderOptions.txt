@@ -1,0 +1,9 @@
+package edu.ucalgary.oop;
+
+boy
+gender queer
+girl
+man
+non-binary
+two-spirit
+woman
