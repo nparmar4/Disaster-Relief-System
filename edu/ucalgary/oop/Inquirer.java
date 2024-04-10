@@ -3,10 +3,9 @@ public class Inquirer extends Person{
     private String info;
     private String servicesPhoneNum;
 
-    public Inquirer(String firstName, String lastName, String servicesPhoneNum, String info) {
+    public Inquirer(String firstName, String lastName, String servicesPhoneNum) {
         super(firstName, lastName);
         this.servicesPhoneNum = servicesPhoneNum;
-        this.info = info;
     }
 
     public String getInfo() {

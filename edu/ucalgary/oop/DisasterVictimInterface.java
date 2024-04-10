@@ -1,5 +1,5 @@
 package edu.ucalgary.oop;
-
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,7 +10,6 @@ public class DisasterVictimInterface {
 
     public static void main(String[] args) {
         System.out.println("Welcome to Disaster Victim Information System");
-
         while (true) {
             System.out.println("\nMenu:");
             System.out.println("1. Enter a new Disaster Victim");
