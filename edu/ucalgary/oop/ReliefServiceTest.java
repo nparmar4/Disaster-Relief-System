@@ -16,7 +16,7 @@ public class ReliefServiceTest {
 
     @Before
     public void setUp() {
-        inquirer = new Inquirer("Neha", "Parmar", "1234567890", "Looking for brother.");
+        inquirer = new Inquirer("Neha", "Parmar", "1234567890");
         missingPerson = new DisasterVictim("Aryan Parmar", "2024-03-10", 15);
         lastKnownLocation = new Location("Office", "2500 University Dr NW");
         reliefService = new ReliefService(inquirer, missingPerson, validDate, expectedInfoProvided, lastKnownLocation);
