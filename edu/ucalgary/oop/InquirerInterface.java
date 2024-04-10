@@ -5,20 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * This class acts as an interface for managing inquiries within a database system.
- * It facilitates the logging of new inquiries, searching for existing ones, and exiting the system.
- * The interface connects to a PostgreSQL database using JDBC.
- */
 public class InquirerInterface {
     private static final Scanner scanner = new Scanner(System.in);
     private static List<Inquirer> inquirers = new ArrayList<>();
-    
-    /**
-     * The main method to execute the Inquiry Management System interface.
-     *
-     * @param args Command-line arguments (not utilized in this application)
-     */
+
     public static void main(String[] args) {
         System.out.println("Welcome to the Inquiry Management System");
 
@@ -30,7 +20,7 @@ public class InquirerInterface {
                 System.out.println("2. Search for an inquiry");
                 System.out.println("3. Exit");
 
-                System.out.print("Your choice: ");
+                System.out.print("Enter your choice: ");
                 int choice = scanner.nextInt();
                 scanner.nextLine(); 
 
@@ -63,7 +53,7 @@ public class InquirerInterface {
                         System.out.println("Exiting...");
                         return;
                     default:
-                        System.out.println("Invalid selection. Please choose a valid option.");
+                        System.out.println("Invalid choice. Please enter a valid option.");
                 }
             }
         } catch (Exception exception) {
@@ -71,88 +61,54 @@ public class InquirerInterface {
         }
     }
     
-    /**
-     * Logs a new inquiry into the database.
-     *
-     * @param connection The database connection
-     * @param firstName   The first name of the inquirer
-     * @param lastName    The last name of the inquirer
-     * @param phoneNumber The phone number of the inquirer
-     * @param details     The details of the inquiry
-     * @return True if the inquiry was successfully logged, false otherwise
-     * @throws SQLException if a database access error occurs
-     */
     static boolean logNewInquiry(Connection connection, String firstName, String lastName, String phoneNumber, String details) throws SQLException {
-        boolean found = false;
-        for (Inquirer inquirer: inquirers) {
-            if (inquirer.getFirstName().equals(firstName) && inquirer.getLastName().equals(lastName) && inquirer.getServicesPhoneNum().equals(phoneNumber)) {
-                found = true;
+        // Check if the inquirer already exists in the database
+        int foundId = -1;
+        String searchQuery = "SELECT id FROM INQUIRER WHERE firstname = ? AND lastname = ? AND phonenumber = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(searchQuery)) {
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, phoneNumber);
+    
+            ResultSet resultSet = preparedStatement.executeQuery();
+    
+            if (resultSet.next()) {
+                foundId = resultSet.getInt("id");
             }
         }
-
-        int foundId = -1;
-        if (!found) {
-            Inquirer inquirer = new Inquirer(firstName, lastName, phoneNumber);
-            inquirers.add(inquirer);
-        
+    
+        // If the inquirer doesn't exist, add them to the database
+        if (foundId == -1) {
             String insertQuery = "INSERT INTO INQUIRER (firstname, lastname, phonenumber) VALUES (?, ?, ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-                preparedStatement.setString(1, firstName);
-                preparedStatement.setString(2, lastName);
-                preparedStatement.setString(3, phoneNumber);
-                int rowsAffected = preparedStatement.executeUpdate();
-
+            try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+                insertStatement.setString(1, firstName);
+                insertStatement.setString(2, lastName);
+                insertStatement.setString(3, phoneNumber);
+                int rowsAffected = insertStatement.executeUpdate();
+    
                 if (rowsAffected > 0) {
-                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                    ResultSet generatedKeys = insertStatement.getGeneratedKeys();
                     if (generatedKeys.next()) {
                         foundId = generatedKeys.getInt(1);
                     }
                 } else {
-                    System.out.println("Failed to log the inquiry.");
-                }
-            }
-        } else {
-            String searchQuery = "SELECT id FROM INQUIRER WHERE firstname = ? AND lastname = ? AND phonenumber = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(searchQuery)) {
-                preparedStatement.setString(1, firstName);
-                preparedStatement.setString(2, lastName);
-                preparedStatement.setString(3, phoneNumber);
-
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                if (resultSet.next()) {
-                    foundId = resultSet.getInt("id");
+                    return false; // Failed to insert the new inquirer
                 }
             }
         }
-
-        if (foundId != -1) {
-            String logQuery = "INSERT INTO INQUIRY_LOG (inquirer, calldate, details) VALUES (?, current_date, ?)";
-            try (PreparedStatement logStatement = connection.prepareStatement(logQuery, Statement.RETURN_GENERATED_KEYS)) {
-                logStatement.setInt(1, foundId);
-                logStatement.setString(2, details);
-                logStatement.executeUpdate();
-
-                System.out.println("Inquiry logged successfully.");
-                return logStatement.getGeneratedKeys().next();
-            }
-        } else {
-            System.out.println("ID not found!");
+    
+        // Log the inquiry in the INQUIRY_LOG table
+        String logQuery = "INSERT INTO INQUIRY_LOG (inquirer, calldate, details) VALUES (?, current_date, ?)";
+        try (PreparedStatement logStatement = connection.prepareStatement(logQuery)) {
+            logStatement.setInt(1, foundId);
+            logStatement.setString(2, details);
+            logStatement.executeUpdate();
+            return true;
         }
-
-        return false;
     }
-
-    /**
-     * Searches for an inquirer by name in the database.
-     *
-     * @param connection The database connection
-     * @param searchTerm The name (or part of the name) to search for
-     * @return A string representation of the search results
-     * @throws SQLException if a database access error occurs
-     */
-    static String searchForInquirer(Connection connection, String searchTerm) throws SQLException {
-        String searchQuery = "SELECT * FROM INQUIRER WHERE LOWER(firstname) LIKE ? OR LOWER(lastname) LIKE ?";
+    
+    static void searchForInquirer(Connection connection, String searchTerm) throws SQLException {
+        String searchQuery = "SELECT INQUIRER.id, firstname, lastname, phonenumber, callDate, details FROM INQUIRER JOIN INQUIRY_LOG ON INQUIRER.id = INQUIRY_LOG.inquirer WHERE LOWER(firstname) LIKE ? OR LOWER(lastname) LIKE ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(searchQuery)) {
             preparedStatement.setString(1, "%" + searchTerm.toLowerCase() + "%");
             preparedStatement.setString(2, "%" + searchTerm.toLowerCase() + "%");
@@ -163,21 +119,12 @@ public class InquirerInterface {
                     String firstName = resultSet.getString("firstname");
                     String lastName = resultSet.getString("lastname");
                     String phoneNumber = resultSet.getString("phonenumber");
-                    System.out.println("ID: " + id + ", Name: " + firstName + " " + lastName + ", Phone Number: " + phoneNumber);
-                    return "ID: " + id + ", Name: " + firstName + " " + lastName + ", Phone Number: " + phoneNumber;
+                    String callDate = resultSet.getString("callDate");
+                    String details = resultSet.getString("details");
+    
+                    System.out.println("ID: " + id + ", Name: " + firstName + " " + lastName + ", Phone Number: " + phoneNumber + ", Call Date: " + callDate + ", Details: " + details);
                 }
             }
         }
-
-        return "";
     }
-
-    /**
-     * Setter method to set the list of inquirers.
-     *
-     * @param inquirers The list of inquirers to set
-     */
-    public static void setInquirers(List<Inquirer> inquirers) {
-        InquirerInterface.inquirers = inquirers;
-    }
-}
+} 

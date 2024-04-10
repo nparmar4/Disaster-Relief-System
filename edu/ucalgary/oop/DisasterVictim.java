@@ -1,9 +1,9 @@
 package edu.ucalgary.oop;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class DisasterVictim extends Person {
     private String dateOfBirth;
@@ -24,6 +24,9 @@ public class DisasterVictim extends Person {
 
     public DisasterVictim(String firstName, String ENTRY_DATE, int age) {
         super(firstName, "");
+        if (!isValidDateFormat(ENTRY_DATE)) {
+            throw new IllegalArgumentException("ENTRY_DATE is not in the correct format (YYYY-MM-DD)");
+        }
         if (age < 0) {
             throw new IllegalArgumentException("Age cannot be negative");
         }
@@ -33,44 +36,64 @@ public class DisasterVictim extends Person {
         this.familyConnections = new ArrayList<>();
         this.personalBelongings = new ArrayList<>();
         this.gender = ""; 
-        initializeGender(); 
     }
 
     public DisasterVictim(String firstName, String ENTRY_DATE) {
         super(firstName, "");
+        if (!isValidDateFormat(ENTRY_DATE)) {
+            throw new IllegalArgumentException("ENTRY_DATE is not in the correct format (YYYY-MM-DD)");
+        }
         this.ENTRY_DATE = ENTRY_DATE;
         this.medicalRecords = new ArrayList<>();
         this.familyConnections = new ArrayList<>();
         this.personalBelongings = new ArrayList<>();
         this.gender = ""; 
-        initializeGender();
     }
 
     public DisasterVictim(String firstName, String ENTRY_DATE, String dateOfBirth) {
         super(firstName, "");
+        if (!isValidDateFormat(ENTRY_DATE)) {
+            throw new IllegalArgumentException("ENTRY_DATE is not in the correct format (YYYY-MM-DD)");
+        }
+        if (!isValidDateFormat(dateOfBirth)) {
+            throw new IllegalArgumentException("dateOfBirth is not in the correct format (YYYY-MM-DD)");
+        }
         this.dateOfBirth = dateOfBirth;
         this.ENTRY_DATE = ENTRY_DATE;
         this.medicalRecords = new ArrayList<>();
         this.familyConnections = new ArrayList<>();
         this.personalBelongings = new ArrayList<>();
-        this.gender = ""; 
-        initializeGender(); 
+        this.gender = "";  
     }
-    private void initializeGender() {
-        try (BufferedReader br = new BufferedReader(new FileReader("GenderOptions.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                this.gender = line.trim().toLowerCase(); // Set gender
-                break; // Only read the first line
+    
+
+    private static boolean isValidDateFormat(String date) {
+        String dateFormatPattern = "^\\d{4}-\\d{2}-\\d{2}$";
+        return date.matches(dateFormatPattern);
+    }
+    
+    public void setGender(String gender) {
+        try {
+            boolean valid = false;
+            File genderFile = new File("GenderOptions.txt");
+            Scanner genderVerifier = new Scanner(genderFile);
+            while (genderVerifier.hasNextLine()) {
+                if (gender.toLowerCase().equals(genderVerifier.nextLine().replaceAll("[\r\n]", ""))) {
+                    valid = true;
+                }
             }
-        } catch (IOException e) {
-            System.err.println("Error reading gender options file: " + e.getMessage());
+            genderVerifier.close();
+            
+            if (!valid) {
+                throw new IllegalArgumentException("Invalid gender. ");
+            }
+            this.gender = gender.toLowerCase();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
 
+    
     public String getGender() {
         return gender;
     }

@@ -9,7 +9,7 @@ public class DisasterVictimInterface {
     private static final List<DisasterVictim> victims = new ArrayList<>();
 
     public static void main(String[] args) {
-        System.out.println("Welcome to the Disaster Victim Information System");
+        System.out.println("Welcome to Disaster Victim Information System");
 
         while (true) {
             System.out.println("\nMenu:");

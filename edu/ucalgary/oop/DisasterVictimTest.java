@@ -184,8 +184,8 @@ public class DisasterVictimTest {
             victim.setGender("boy"); 
             assertEquals("boy", victim.getGender());
 
-            victim.setGender("invalid_gender"); 
-            assertFalse(validateGender(genderOptions, victim.getGender()));
+            assertThrows(IllegalArgumentException.class, () -> victim.setGender("invalid_gender"));
+            assertTrue(validateGender(genderOptions, victim.getGender()));
         } catch (IOException e) {
             fail("Error reading gender options file: " + e.getMessage());
         }
