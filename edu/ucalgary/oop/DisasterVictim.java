@@ -1,5 +1,8 @@
 package edu.ucalgary.oop;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class DisasterVictim extends Person {
@@ -12,10 +15,12 @@ public class DisasterVictim extends Person {
     private String ENTRY_DATE;
     private ArrayList<Supply> personalBelongings;
     private String supply;
-
+    private String gender;
+    
     public enum Diet {
         AVML, DBML, GFML, KSML, LSML, MOML, PFML, VGML, VJML
     }
+
 
     public DisasterVictim(String firstName, String ENTRY_DATE, int age) {
         super(firstName, "");
@@ -27,6 +32,18 @@ public class DisasterVictim extends Person {
         this.medicalRecords = new ArrayList<>();
         this.familyConnections = new ArrayList<>();
         this.personalBelongings = new ArrayList<>();
+        this.gender = ""; 
+        initializeGender(); 
+    }
+
+    public DisasterVictim(String firstName, String ENTRY_DATE) {
+        super(firstName, "");
+        this.ENTRY_DATE = ENTRY_DATE;
+        this.medicalRecords = new ArrayList<>();
+        this.familyConnections = new ArrayList<>();
+        this.personalBelongings = new ArrayList<>();
+        this.gender = ""; 
+        initializeGender();
     }
 
     public DisasterVictim(String firstName, String ENTRY_DATE, String dateOfBirth) {
@@ -36,7 +53,28 @@ public class DisasterVictim extends Person {
         this.medicalRecords = new ArrayList<>();
         this.familyConnections = new ArrayList<>();
         this.personalBelongings = new ArrayList<>();
+        this.gender = ""; 
+        initializeGender(); 
     }
+    private void initializeGender() {
+        try (BufferedReader br = new BufferedReader(new FileReader("GenderOptions.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                this.gender = line.trim().toLowerCase(); // Set gender
+                break; // Only read the first line
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading gender options file: " + e.getMessage());
+        }
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
 
     public String getDateOfBirth() {
         return dateOfBirth;
@@ -171,9 +209,3 @@ public class DisasterVictim extends Person {
         }
     }
 }
-
-
-
-
-
-

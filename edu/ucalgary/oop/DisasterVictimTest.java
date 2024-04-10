@@ -3,6 +3,9 @@ package edu.ucalgary.oop;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class DisasterVictimTest {
 
@@ -110,7 +113,7 @@ public class DisasterVictimTest {
         assertEquals(0, victim.getFamilyConnections().size());
     }
 
-
+    
     @Test
     public void testAddMedicalRecord() {
         Location location = new Location("Michael", "USA");
@@ -168,4 +171,34 @@ public class DisasterVictimTest {
 
         assertEquals(5, victim.getPersonalBelongings().get(0).getQuantity());
     }
+    @Test
+    public void testSetAndGetGender() {
+        try (BufferedReader br = new BufferedReader(new FileReader("GenderOptions.txt"))) {
+            String line;
+            String[] genderOptions = new String[7]; 
+            int index = 0;
+            while ((line = br.readLine()) != null && index < genderOptions.length) {
+                genderOptions[index] = line.trim().toLowerCase();
+                index++;
+            }
+            victim.setGender("boy"); 
+            assertEquals("boy", victim.getGender());
+
+            victim.setGender("invalid_gender"); 
+            assertFalse(validateGender(genderOptions, victim.getGender()));
+        } catch (IOException e) {
+            fail("Error reading gender options file: " + e.getMessage());
+        }
+    }
+
+    // Helper method to validate if the gender is one of the options in the file
+    private boolean validateGender(String[] genderOptions, String gender) {
+        for (String option : genderOptions) {
+            if (option.equals(gender)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }
